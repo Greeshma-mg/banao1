@@ -1,0 +1,131 @@
+.posts-container {
+  max-width: 700px;
+  margin: 20px auto;
+  padding: 15px;
+  font-family: Arial, sans-serif;
+}
+
+.posts-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+
+.posts-form input,
+.posts-form textarea {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.posts-form button {
+  padding: 10px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.posts-form button:hover {
+  background: #0056b3;
+}
+
+.post-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.post-card h3 {
+  margin: 0 0 10px;
+  font-size: 18px;
+  color: #333;
+}
+
+.post-card p {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.post-card button {
+  margin-right: 8px;
+  margin-top: 5px;
+  padding: 6px 12px;
+  background: #28a745;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.post-card button:hover {
+  background: #218838;
+}
+
+.post-card button:nth-child(2) {
+  background: #ffc107;
+}
+
+.post-card button:nth-child(2):hover {
+  background: #e0a800;
+}
+
+.post-card button:nth-child(3) {
+  background: #dc3545;
+}
+
+.post-card button:nth-child(3):hover {
+  background: #c82333;
+}
+
+.comments {
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px solid #eee;
+}
+
+.comments h4 {
+  font-size: 15px;
+  margin-bottom: 8px;
+  color: #444;
+}
+
+.comments p {
+  font-size: 13px;
+  color: #555;
+  margin: 4px 0;
+}
+
+.comments input {
+  width: 80%;
+  padding: 8px;
+  margin-top: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.comments button {
+  padding: 7px 14px;
+  margin-left: 5px;
+  margin-top: 8px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.comments button:hover {
+  background: #0056b3;
+}
