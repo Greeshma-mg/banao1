@@ -21,6 +21,7 @@ export const registerUser = async (req, res) => {
 };
 
 export const loginUser = async (req, res) => {
+
   try {
     const { email, password } = req.body;
     console.log("Login attempt:", { email, password });
@@ -60,7 +61,6 @@ export const forgotPassword = async (req, res) => {
 
     await sendResetEmail(email, resetToken);
 
-    // 👇 Return token for testing (remove this in production!)
     res.json({
       message: "Password reset link sent to your email",
       resetToken: resetToken
@@ -78,19 +78,20 @@ export const resetPassword = async (req, res) => {
     const { token } = req.params;
     const { newPassword } = req.body;
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    if (!newPassword) {
+      return res.status(400).json({ message: "New password is required" });
+    }
 
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
     const user = await User.findByIdAndUpdate(
       decoded.id,
       { password: hashedPassword },
-      { new: true }   // return updated user
+      { new: true }
     );
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
+    if (!user) return res.status(404).json({ message: "User not found" });
 
     res.json({ message: "Password reset successful" });
   } catch (err) {

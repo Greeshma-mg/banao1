@@ -10,6 +10,8 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+      console.log("Login attempt:", { email, password });  
+
     try {
       const res = await api.post("/auth/login", { email, password });
       alert("Login successful!");
