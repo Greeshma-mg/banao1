@@ -23,12 +23,16 @@ export const registerUser = async (req, res) => {
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
+    console.log("Login attempt:", { email, password });
 
     const user = await User.findOne({ email });
-    if (!user) return res.status(401).json({ error: "Invalid credentials" });
+    if (!user) return res.status(401).json({ error: "Invalid credentials - user not found" });
 
+    console.log("Stored hash:", user.password);
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(401).json({ error: "Invalid credentials" });
+    console.log("Password match?", isMatch);
+
+    if (!isMatch) return res.status(401).json({ error: "Invalid credentials - password mismatch" });
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
@@ -48,16 +52,26 @@ export const forgotPassword = async (req, res) => {
     const user = await User.findOne({ email });
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    const resetToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "15m" });
+    const resetToken = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "15m" }
+    );
 
     await sendResetEmail(email, resetToken);
 
-    res.json({ message: "Password reset link sent to your email" });
+    // 👇 Return token for testing (remove this in production!)
+    res.json({
+      message: "Password reset link sent to your email",
+      resetToken: resetToken
+    });
+
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
+
 
 export const resetPassword = async (req, res) => {
   try {
@@ -65,17 +79,22 @@ export const resetPassword = async (req, res) => {
     const { newPassword } = req.body;
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.id);
-    if (!user) return res.status(404).json({ message: "User not found" });
 
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(newPassword, salt);
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-    user.password = hashedPassword;
-    await user.save();
+    const user = await User.findByIdAndUpdate(
+      decoded.id,
+      { password: hashedPassword },
+      { new: true }   // return updated user
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
     res.json({ message: "Password reset successful" });
   } catch (err) {
-    res.status(500).json({ message: "Invalid or expired token", error: err.message });
+    console.error(err);
+    res.status(400).json({ message: "Invalid or expired token", error: err.message });
   }
 };
