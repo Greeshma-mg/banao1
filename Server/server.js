@@ -11,25 +11,31 @@ dotenv.config();
 const app = express();
 
 const allowedOrigins = [
-  "http://localhost:3000",         
-  "https://banao1-1.onrender.com"   
+  "http://localhost:3000",
+  "https://banao1-1.onrender.com" 
 ];
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin) return callback(null, true);
+app.use(cors({
+  origin: function(origin, callback) {
+    if (!origin) return callback(null, true); 
+    if (allowedOrigins.indexOf(origin) === -1) {
+      return callback(new Error("CORS not allowed for this origin"), false);
+    }
+    return callback(null, true);
+  },
+  credentials: true,
+}));
 
-      if (allowedOrigins.indexOf(origin) === -1) {
-        return callback(new Error("CORS not allowed for this origin"), false);
-      }
-
-      return callback(null, true);
-    },
-    credentials: true,
-  })
-);
-
+app.options("*", cors({
+  origin: function(origin, callback) {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      return callback(new Error("CORS not allowed for this origin"), false);
+    }
+    return callback(null, true);
+  },
+  credentials: true,
+}));
 
 app.use(express.json());
 
